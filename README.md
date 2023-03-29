@@ -8,7 +8,7 @@ git clone git@github.com:ctg-single-cell/transcriptome_comp.git
 ```
 2. Create a branch for you to work on
 ```
-git branch -b "fallon_dev"
+git checkout -b "fallon_dev"
 ```
 3. Do your work on this branch. Regularly do:
 ```
