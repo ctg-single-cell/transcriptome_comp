@@ -1,6 +1,9 @@
 Project Title: transcriptome_comp
-    This repo contains scripts relating to analyzing scRNAseq data.
+   
+   This repo contains scripts relating to analyzing scRNAseq data.
+
 Creator: Fallon Ratner
+
 Date: 30-03-2023
 
 Datasets Used:
