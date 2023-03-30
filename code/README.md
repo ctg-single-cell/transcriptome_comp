@@ -19,11 +19,14 @@ Datasets Used:
         Link:http://solo.bmap.ucla.edu/shiny/webapp/
 
 Scripts:
+    
     raw_annot_prototype28.03.py
         Python script to open and combine raw gene expression and metadata files from both datasets.
         The output processed files can be used in the following scripts.
+    
     processed_annot_prototype29.03.23
         Python script to open and analyze processed data from both datasets.
         Data is further subsetted into dataframes
+    
     bar_plot_30.03.23
         R script to plot cell types based on data processed in the previous Python scripts.
