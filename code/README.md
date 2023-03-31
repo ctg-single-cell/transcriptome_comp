@@ -2,7 +2,7 @@
    
 ## This repo contains scripts relating to analyzing scRNAseq data.
 
-### Creator: Fallon Ratner
+### Creator: Fallon Ratner (f.t.ratner@student.vu.nl)
 
 ### Date: 30-03-2023
 
