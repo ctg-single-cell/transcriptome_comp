@@ -1,27 +1,27 @@
-Project Title: transcriptome_comp
+# Project Title: transcriptome_comp
    
-   This repo contains scripts relating to analyzing scRNAseq data.
+## This repo contains scripts relating to analyzing scRNAseq data.
 
-Creator: Fallon Ratner
+### Creator: Fallon Ratner
 
-Date: 30-03-2023
+### Date: 30-03-2023
 
-Datasets Used:
+## Datasets Used:
     
     Velasco et al., 2019
         scRNAseq of PGP1 (iPSC cell line) - derived 3 & 6 month brain organoids
         Number of Cells in 3 months: 17,774
         Number of Cells in 6 months: 21,213
-        Sequencing Technology: Illumina NextSeq 500
+        Sequencing Technology: Illumina NextSeq 500, 10x Genomics
         Link: https://singlecell.broadinstitute.org/single_cell/study/SCP282/reproducible-brain-organoids#study-download
 
     Polioudakis et al., 2019
         scRNAseq of 17-18GW fetal neocortex
         Number of Cells: 40,000
-        Sequencing Technology: Illumina HiSeq 2500
+        Sequencing Technology: Illumina HiSeq 2500, Drop-Seq
         Link:http://solo.bmap.ucla.edu/shiny/webapp/
 
-Scripts:
+## Scripts:
     
     raw_annot_prototype28.03.py
         Python script to open and combine raw gene expression and metadata files from both datasets.
