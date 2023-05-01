@@ -1,36 +1,33 @@
-#Created by: Fallon Ratner on 12.04.23
-#Project: scRNAseq Prototype Analysis with scType
-
-#import libraries
+#Created by: Fallon Ratner on 13.04.23
 library(Seurat)
+library(SeuratDisk)
 library(data.table)
+library(rhdf5)
 library(dplyr)
 library(HGNChelper)
 library(ggplot2)
-
 # set file path for scRNAseqData
-file_path <- "{Include path to your file}" # path to the scRNAseq data file
+file_path <- "C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Velasco/GSE129519_expression_PGP1.3mon.txt/expression_PGP1.3mon.txt" # path to the scRNAseq data file
+file_path <- "C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Velasco/expression_PGP1.6mon.txt/expression_PGP1.6mon.txt" # path to the scRNAseq data file
+file_path <- "C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Polio/raw_counts_mat.rdata"
 
-#Loading data if in matrix (mtx) format
+
+#Load the Polio data
 load(file_path)
 data_mat <- as.matrix(raw_counts_mat)
-
-#Create a seurat oobject
 myseurat <- CreateSeuratObject(counts = data_mat)
 
-#Loading data if in txt format
+
+#Load the Velasco data
 mydata <- fread(file_path, header = TRUE, sep = "\t")
-#make the genes the rownames
 row.names(mydata) <- mydata$GENE
 
-#create a seurat object
 myseurat <- CreateSeuratObject(counts = mydata, project = "myproject", min.cells = 3, min.features = 200)
 
-#Make sure that the rownames are genes before continuing
+#check that the rownames are genes
 data <- myseurat[["RNA"]]@data
 row.names(data)
 
-#Use Seurat for Pre-processing (based on scType workflow)
 # normalize data
 myseurat[["percent.mt"]] <- PercentageFeatureSet(myseurat, pattern = "^MT-")
 myseurat <- NormalizeData(myseurat, normalization.method = "LogNormalize", scale.factor = 10000)
@@ -47,8 +44,9 @@ ElbowPlot(myseurat)
 myseurat <- FindNeighbors(myseurat, dims = 1:10)
 myseurat <- FindClusters(myseurat, resolution = 0.8)
 myseurat <- RunUMAP(myseurat, dims = 1:10)
+pdf("umap_annot_polio_noannot.pdf")
 DimPlot(myseurat, reduction = "umap")
-
+dev.off()
 #Assign Cell types using scType
 
 # load gene set preparation function
@@ -58,10 +56,17 @@ source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sct
 
 # DB file: input cell marker file
 db_ = "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx";
-tissue = "Brain" 
+tissue = "Brain" # e.g. Immune system,Pancreas,Liver,Eye,Kidney,Brain,Lung,Adrenal,Heart,Intestine,Muscle,Placenta,Spleen,Stomach,Thymus 
 
 # prepare gene sets
 gs_list = gene_sets_prepare(db_, tissue)
+
+#or use my own gene list
+#Use my gs_list file
+#db_2 = "gs_list_FR.xlsx";
+#tissue = "Brain" 
+# prepare gene sets
+#gs_list2 = gene_sets_prepare(db_2, tissue)
 
 #Assign cell type to the clusters
 # get cell-type by cell matrix
@@ -84,8 +89,7 @@ sctype_scores = cL_resutls %>% group_by(cluster) %>% top_n(n = 1, wt = scores)
 sctype_scores$type[as.numeric(as.character(sctype_scores$scores)) < sctype_scores$ncells/4] = "Unknown"
 print(sctype_scores[,1:3])
 
-#save the annotations to csv for further processing via python
-write.csv(sctype_scores, file = "{file name}.csv", row.names = TRUE)
+write.csv(sctype_scores, file = "Polio_cluster_sctype.csv", row.names = TRUE)
 
 #Overlay cell type assignments on UMAP
 myseurat@meta.data$customclassif = ""
@@ -94,11 +98,10 @@ for(j in unique(sctype_scores$cluster)){
   myseurat@meta.data$customclassif[myseurat@meta.data$seurat_clusters == j] = as.character(cl_type$type[1])
 }
 
-dev.new()    
+dev.new()
+DimPlot(myseurat, reduction = "umap", label = TRUE, repel = TRUE, group.by = 'customclassif')        
 
-pdf("{plot name}.pdf")
+pdf("sctype_umap_annot_Polio.pdf")
 DimPlot(myseurat, reduction = "umap", label = TRUE, pt.size = 0.5, group.by = 'customclassif')        
 
-#can save the seurat object with new annotations
-saveRDS(myseurat, file = "{object name}.rds")
-
+saveRDS(myseurat, file = "polio_sctype.rds")
