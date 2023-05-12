@@ -4,7 +4,7 @@
 
 ### Creator: Fallon Ratner (f.t.ratner@student.vu.nl)
 
-### Date: 01-05-2023
+### Date: 12-05-2023
 
 ## Datasets Used:
     
@@ -51,4 +51,6 @@
     
     bar_plot.R
         R script to plot cell types based on metadata (metadata_annotation.py) and the scType annotations (output of sctype_annot.R & sctype_processing.py)
-.
+    
+    cell_typist_annot.py
+        Python script to annotate cells based on the Cell Typist reference model: https://github.com/Teichlab/celltypist#usage. The datasets need to be normalized to be used as input for cell typist, so they are first normalized with scanpy. 
