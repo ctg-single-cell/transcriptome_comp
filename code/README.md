@@ -4,7 +4,7 @@
 
 ### Creator: Fallon Ratner (f.t.ratner@student.vu.nl)
 
-### Date: 12-05-2023
+### Date: 06-06-2023
 
 ## Datasets Used:
     
@@ -38,7 +38,8 @@
     
     gs_list_FR.xslx
         Excel document containing a list of gene markers for different cell types in the brain based on the literature and scType database which can be used as input in the sctype_annot.R script. 
-
+ gs_listv4.xslx
+        Excel document edited as of 26-05-23, containing a list of gene markers for different cell types in the brain based on the literature and scType database which can be used as input in the sctype_annot.R script. 
 ## Scripts:
     metatdata_annotation.py
         Python script to open and combine raw gene expression and metadata files from Velasco, Polioudakis, and Herring datasets. Then, the data is processed for calculating proportions and subsetted into dataframes to be used for visualization.
@@ -54,3 +55,9 @@
     
     cell_typist_annot.py
         Python script to annotate cells based on the Cell Typist reference model: https://github.com/Teichlab/celltypist#usage. The datasets need to be normalized to be used as input for cell typist, so they are first normalized with scanpy. 
+        
+    scanorama_int.py
+        Python script to integrate and batch correct the Herring datasets with Scanorama. First the individual datasets are read into scanpy objects then combine into one large scanpy object. Next, highly variable genes are selected which is used for Scanorama. The integrated object is saved as an h5ad file.
+    
+    int_sctype.R
+       R script to annotate the Scanorama integrated Herring datasets from scanorama_int.py script. First the h5ad file is loaded then converted into a Seurat object using the zelkonverter package. Before using scType the data is pre-processed with seurat and the Scanorama umap is used to identify clusters. Next, scType is used to identify cell types in the Scanorama integrated object.
