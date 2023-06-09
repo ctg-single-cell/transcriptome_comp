@@ -26,7 +26,7 @@ def process_scanpy_data(exp_file_3mon, exp_file_6mon, metadata_file, metadata_ou
     metadata = pd.read_csv(metadata_file, sep='\t')
 
     # subset the metadata to only include cells with 3 months or 6 months PGP1
-    metadata_PGP1_3mon = metadata[metadata["NAME"].isin(adata_3mon_transpose.obs.index.tolist()]
+    metadata_PGP1_3mon = metadata[metadata["NAME"].isin(adata_3mon_transpose.obs.index.tolist())]
     metadata_PGP1_6mon = metadata[metadata["NAME"].isin(adata_6mon_transpose.obs.index.tolist())]
 
 

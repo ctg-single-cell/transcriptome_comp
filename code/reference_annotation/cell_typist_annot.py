@@ -132,7 +132,7 @@ sc.tl.umap(adata)
 #Visualization
 sc.pl.umap(adata)
 #Visualise the predicted cell types overlaid onto the UMAP.
-predictions.to_plots(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'Polio')
+predictions.to_plots(folder = 'output', prefix = 'Polio')
 
 #Visualise the decision scores and probabilities of each cell type overlaid onto the UMAP as well.
 predictions.to_plots(folder = '/path/to/a/folder', prefix = '', plot_probability = True)
@@ -178,7 +178,7 @@ predictions.probability_matrix
 predictions = celltypist.annotate(input_file, model = 'Developing_Human_Brain.pkl', mode = 'prob match', p_thres = 0.5)
 
 #Export the three results to csv tables.
-predictions.to_table(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'GA22_')
+predictions.to_table(folder = 'output', prefix = 'GA22_')
 
 annot = pd.read_csv("GA22_predicted_labels.csv")
 
@@ -189,7 +189,7 @@ annot['Group'] = '22 GA'
 # Call the function for each dataset
 counts_ga22 = calculate_cell_type_percentages(annot, '22 GA')
 ######################################################################################
-input_file =sc.read('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Herring/ga24_cleaned_count_matrices.h5ad')
+input_file =sc.read('ga24_cleaned_count_matrices.h5ad')
 
 #need normalized expression for prediction
 #pre-processing with Scanpy
@@ -229,7 +229,7 @@ predictions.probability_matrix
 predictions = celltypist.annotate(input_file, model = 'Developing_Human_Brain.pkl', mode = 'prob match', p_thres = 0.5)
 
 #Export the three results to csv tables.
-predictions.to_table(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'GA24_')
+predictions.to_table(folder = 'output', prefix = 'GA24_')
 
 annot = pd.read_csv("GA24_predicted_labels.csv")
 
@@ -239,7 +239,7 @@ annot['Group'] = '24 GA'
 # Call the function for each dataset
 counts_ga24 = calculate_cell_type_percentages(annot, '24_GA')    
 ######################################################################################
-input_file =sc.read('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Herring/ga34_cleaned_count_matrices.h5ad')
+input_file =sc.read('ga34_cleaned_count_matrices.h5ad')
 
 #need normalized expression for prediction
 #pre-processing with Scanpy
@@ -260,8 +260,6 @@ input_file.raw = input_file
 #Predict the identity of each input cell.
 predictions = celltypist.annotate(input_file, model = 'Developing_Human_Brain.pkl')
 
-#In case your input file is a gene-by-cell table.
-#predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 #In case your input file is a gene-by-cell mtx file.
 predictions = celltypist.annotate(input_file, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 
@@ -279,7 +277,7 @@ predictions.probability_matrix
 predictions = celltypist.annotate(input_file, model = 'Developing_Human_Brain.pkl', mode = 'prob match', p_thres = 0.5)
 
 #Export the three results to csv tables.
-predictions.to_table(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'GA34_')
+predictions.to_table(folder = 'output', prefix = 'GA34_')
 
 annot = pd.read_csv("GA34_predicted_labels.csv")
 
@@ -313,12 +311,10 @@ adata.raw = adata
 #Predict the identity of each input cell.
 predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl')
 
-#In case your input file is a gene-by-cell table.
-#predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 #In case your input file is a gene-by-cell mtx file.
 predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 #Export the three results to csv tables.
-predictions.to_table(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'Velasco_3mon_')
+predictions.to_table(folder = 'output', prefix = 'Velasco_3mon_')
 
 annot = pd.read_csv("Velasco_3mon_predicted_labels.csv")
 
@@ -350,12 +346,10 @@ adata.raw = adata
 #Predict the identity of each input cell.
 predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl')
 
-#In case your input file is a gene-by-cell table.
-#predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 #In case your input file is a gene-by-cell mtx file.
 predictions = celltypist.annotate(adata, model = 'Developing_Human_Brain.pkl', transpose_input = True)
 #Export the three results to csv tables.
-predictions.to_table(folder = 'C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output', prefix = 'Velasco_6mon_')
+predictions.to_table(folder = 'output', prefix = 'Velasco_6mon_')
 
 annot = pd.read_csv("Velasco_6mon_predicted_labels.csv")
 
