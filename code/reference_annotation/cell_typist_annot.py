@@ -103,40 +103,6 @@ def calculate_cell_type_percentages(df, group):
 
 # Call the function for each dataset
 counts_Polio = calculate_cell_type_percentages(annot, '17-18 GW')
-    
-    
-#Get an `AnnData` with predicted labels and confidence scores embedded into the observation metadata columns.
-adata = predictions.to_adata(insert_labels = True, insert_conf = True)
-#Inspect these columns (`predicted_labels` and `conf_score`).
-adata.obs
-
-#Get an `AnnData` with predicted labels, confidence scores, and decision matrix.
-adata = predictions.to_adata(insert_labels = True, insert_conf = True, insert_decision = True)
-#Get an `AnnData` with predicted labels, confidence scores, and probability matrix (recommended).
-adata = predictions.to_adata(insert_labels = True, insert_conf = True, insert_prob = True)
-
-#Continue Processing
-#Highly variable genes
-sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
-sc.pl.highly_variable_genes(adata)
-adata = adata[:, adata.var.highly_variable]
-
-sc.pp.regress_out(adata, ['total_counts', 'pct_counts_mt'])
-sc.pp.scale(adata, max_value=10)
-#PCA
-sc.tl.pca(adata, svd_solver='arpack')
-#nearest neighbors
-sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-sc.tl.leiden(adata)  
-sc.tl.umap(adata)
-#Visualization
-sc.pl.umap(adata)
-#Visualise the predicted cell types overlaid onto the UMAP.
-predictions.to_plots(folder = 'output', prefix = 'Polio')
-
-#Visualise the decision scores and probabilities of each cell type overlaid onto the UMAP as well.
-predictions.to_plots(folder = '/path/to/a/folder', prefix = '', plot_probability = True)
-
 ######################################################################################
 input_file =sc.read('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Herring/ga22_cleaned_count_matrices.h5ad')
 

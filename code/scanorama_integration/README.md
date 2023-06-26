@@ -47,7 +47,7 @@
 6. Visualize the uncorrected and corrected data in a UMAP.
 7. Save the scanpy objects as an h5ad file which will store the: corrected matrix, UMAP, and metadata. 
 
-# 3. Annotate Integrated Data with scType and Visualize
+# 4. Annotate Integrated Data with scType and Visualize
 ### In the int_sctype_herr.R script, the files from the previous step are used to annotate cells and generate a bar chart.
 1. Read in the h5ad file and convert to a Seurat object with the zellkonverter package.
 2. Visualize the UMAP to check if it's the same as the one generated in Python.
@@ -62,3 +62,14 @@
 9. Calculate the proportion of cell types as a percentage for each cell in each age group.
 10. Not all cell types are found in each dataset, so those values will be assigned to 0.
 11. Visualize the percentage in a bar chart. 
+
+# 5. Integrate More Datasets with Scanorama
+### In the scripts: invivo_int2.py, invitro_int.py, vivo_vitro_int.py, and vivo_vitro_int2.py multiple datasets are integrated with Scanroma.
+1. The different files need to be made into scanpy objects based on their file type. Then the type of dataset and first author is added to the metadata. 
+2. Perform standard scanpy pre-processing to the individual datasets. 
+4. Combine the datasets into one scanpy object and perform standard scanpy pre-processing.
+4. Identify highly variable genes in the combined data.
+5. Make a list of the individual datatsets with the variable genes calculated in the previous step.
+6. Perform the integration and batch correction using the scanorama package. (This is done on snellius in the vivo_vitro_int2.py script)
+7. Visualize the uncorrected and corrected data in a UMAP.
+8. Save the scanpy objects as an h5ad file which will store the: corrected matrix, UMAP, and metadata.
