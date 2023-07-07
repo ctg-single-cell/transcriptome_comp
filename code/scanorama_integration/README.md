@@ -1,14 +1,14 @@
 # Integrate Datasets with Scanorama
-### Date: 09-06-2023   
-### Author: Fallon Ratner (f.t.ratner@student.vu.nl)
-### This README contains instructions on how to run Scanorama on a local computer to integrate single cell/nuclei RNA-seq from in vivo brain tissue.
-### _NOTE_: Integrating more datasets should be done on a cluster computer.
+- Date: 09-06-2023
+- Author: Fallon Ratner (f.t.ratner@student.vu.nl)
+- This README contains instructions on how to run Scanorama on a local computer to integrate single cell/nuclei RNA-seq from in vivo brain tissue.
+**NOTE**: Integrating more datasets should be done on a cluster computer.
 
 # What is Scanorama?
-### Scanorama is a tool to integrate datasets and correct for batch effects. The method is based on using highly variable genes to compute mutual nearest neighbors among the datasets. Scanorama requires as input: a list of scanpy objects, a list of highly variables genes, and the Scanorama package. After running the computation, Scanorama will produce a corrected gene matrix which can be used to generate a UMAP. The output can then be used for further processing such as annotation with scType.
-### For more information about Scanorama please refer to the orginal publication: 
-### Hie, B., Bryson, B. & Berger, B. Efficient integration of heterogeneous single-cell transcriptomes using Scanorama. Nat Biotechnol 37, 685–691 (2019). https://doi.org/10.1038/s41587-019-0113-3
-### Or visit the Scanorama Github: https://github.com/brianhie/scanorama
+- Scanorama is a tool to integrate datasets and correct for batch effects. The method is based on using highly variable genes to compute mutual nearest neighbors among the datasets. Scanorama requires as input: a list of scanpy objects, a list of highly variables genes, and the Scanorama package. After running the computation, Scanorama will produce a corrected gene matrix which can be used to generate a UMAP. The output can then be used for further processing such as annotation with scType.
+- For more information about Scanorama please refer to the orginal publication: 
+- Hie, B., Bryson, B. & Berger, B. Efficient integration of heterogeneous single-cell transcriptomes using Scanorama. Nat Biotechnol 37, 685–691 (2019). https://doi.org/10.1038/s41587-019-0113-3
+- Or visit the Scanorama Github: https://github.com/brianhie/scanorama
 
 
 # 0. Installation of software and packages
