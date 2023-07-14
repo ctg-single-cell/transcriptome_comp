@@ -1,24 +1,24 @@
 # Integrate Datasets with Scanorama
-### Date: 09-06-2023   
-### Author: Fallon Ratner (f.t.ratner@student.vu.nl)
-### This README contains instructions on how to run Scanorama on a local computer to integrate single cell/nuclei RNA-seq from in vivo brain tissue.
-### _NOTE_: Integrating more datasets should be done on a cluster computer.
+- Date: 09-06-2023
+- Author: Fallon Ratner (f.t.ratner@student.vu.nl)
+- This README contains instructions on how to run Scanorama on a local computer to integrate single cell/nuclei RNA-seq from in vivo brain tissue.
+**NOTE**: Integrating more datasets should be done on a cluster computer.
 
-# What is Scanorama?
-### Scanorama is a tool to integrate datasets and correct for batch effects. The method is based on using highly variable genes to compute mutual nearest neighbors among the datasets. Scanorama requires as input: a list of scanpy objects, a list of highly variables genes, and the Scanorama package. After running the computation, Scanorama will produce a corrected gene matrix which can be used to generate a UMAP. The output can then be used for further processing such as annotation with scType.
-### For more information about Scanorama please refer to the orginal publication: 
-### Hie, B., Bryson, B. & Berger, B. Efficient integration of heterogeneous single-cell transcriptomes using Scanorama. Nat Biotechnol 37, 685–691 (2019). https://doi.org/10.1038/s41587-019-0113-3
-### Or visit the Scanorama Github: https://github.com/brianhie/scanorama
+## What is Scanorama?
+- Scanorama is a tool to integrate datasets and correct for batch effects. The method is based on using highly variable genes to compute mutual nearest neighbors among the datasets. Scanorama requires as input: a list of scanpy objects, a list of highly variables genes, and the Scanorama package. After running the computation, Scanorama will produce a corrected gene matrix which can be used to generate a UMAP. The output can then be used for further processing such as annotation with scType.
+- For more information about Scanorama please refer to the orginal publication: 
+- Hie, B., Bryson, B. & Berger, B. Efficient integration of heterogeneous single-cell transcriptomes using Scanorama. Nat Biotechnol 37, 685–691 (2019). https://doi.org/10.1038/s41587-019-0113-3
+- Or visit the Scanorama Github: https://github.com/brianhie/scanorama
 
 
-# 0. Installation of software and packages
+## 0. Installation of software and packages
 ### scType pipeline requires the following
 * [Python]: version 3.10.9
 * Python packages (scanpy; scanorama; numpy)
 * [R]: version 4.2.3
 * R packages (Seurat; HGNChelper; zellkonverter; anndata; dplyr; stringr)
 
-# 1. Downloading the scRNAseq Data
+## 1. Downloading the scRNAseq Data
 ### Download the Data
 * Go to the link provided in the following text (Dataset Used) and download this file: 'Processed_data_RNA-all_full-counts-and-downsampled-CPM.h5ad'
 ### Dataset Used:
@@ -34,10 +34,10 @@
         Link:https://console.cloud.google.com/storage/browser/neuro-dev/Processed_data;tab=objects?prefix=&forceOnObjectsSortingFiltering=false
         Accessed: 19-04-2023
 
-# 2. Extracting the individual scRNAseq Datasets
+## 2. Extracting the individual scRNAseq Datasets
 ### In the extract_herring.py script the downloaded file from the previous step, will be used to extract the individual datasets which have been cleaned by the original authors. The output will be a cleaned count matrix in the h5ad file format.
 
-# 3. Integrate with Scanorama
+## 3. Integrate with Scanorama
 ### In the scanorama_int_herring.py script, the files from the previous step will be used for integration with Scanorama.
 1. The h5ad files needs to be combined and converted into a scanpy object using the scanpy package.
 2. Perform Variance Stabilizing Transformation (VST) which stabilizes variance of gene expression.
@@ -47,7 +47,7 @@
 6. Visualize the uncorrected and corrected data in a UMAP.
 7. Save the scanpy objects as an h5ad file which will store the: corrected matrix, UMAP, and metadata. 
 
-# 4. Annotate Integrated Data with scType and Visualize
+## 4. Annotate Integrated Data with scType and Visualize
 ### In the int_sctype_herr.R script, the files from the previous step are used to annotate cells and generate a bar chart.
 1. Read in the h5ad file and convert to a Seurat object with the zellkonverter package.
 2. Visualize the UMAP to check if it's the same as the one generated in Python.
@@ -63,7 +63,7 @@
 10. Not all cell types are found in each dataset, so those values will be assigned to 0.
 11. Visualize the percentage in a bar chart. 
 
-# 5. Integrate More Datasets with Scanorama
+## 5. Integrate More Datasets with Scanorama
 ### In the scripts: invivo_int2.py, invitro_int.py, vivo_vitro_int.py, and vivo_vitro_int2.py multiple datasets are integrated with Scanroma.
 1. The different files need to be made into scanpy objects based on their file type. Then the type of dataset and first author is added to the metadata. 
 2. Perform standard scanpy pre-processing to the individual datasets. 
