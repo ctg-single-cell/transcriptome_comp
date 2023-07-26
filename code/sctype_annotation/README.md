@@ -81,6 +81,9 @@ Xiang et al., 2017
     Link: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97882
     Accessed:
 
+# 2. Annotate In Vivo Datasets Individually
+### In the sctype_annot_all.r and Annotation_Guidelines.md the individual datasets are processed with Seurat and annotated with scType. The md file contains the number of PCs and resolution used for each dataset. 
+
 # 2. Extracting the individual scRNAseq Datasets
 ### In the extract_herring.py script the downloaded file from the previous step, will be used to extract the individual datasets which have been cleaned by the original authors. The output will be a cleaned count matrix in the h5ad file format.
 
@@ -111,6 +114,20 @@ Xiang et al., 2017
 5. The sctype score is calculated for each cell and each cluster resulting in a dataframe with an assigned label for each cluster.
     1. The score df is saved as a text file for each format and can be used for further processing.
 6. The cell labels are visualized in the Seurat UMAP. 
+
+# 3c. Annotate with scType
+### In the vivo_int_separate_sctype.r, and vitro_int_separte_sctype.r scripts, the multiple integrated datasets from the Integration step will be annotated separately with the scType tool. First, use the extract_int_datasets.py file to separate the datasets. 
+1. In the extract_int_datasets.py file the datastes will be made into individual h5ad files. 
+2. The h5ad files are converted into a Seurat object which is done with the anndata and Seurat packages.
+2. The data is pre-processed using a standard Seurat pipeline to normalize and scale the data which is required as input for Sctype.
+3. The data is clustered using the standard Seurat pipeline which is also required as input for Sctype.
+4. The scType functions and gene list are loaded into the environment.
+    1. The gene list used is gs_listv4.xlsx, which consists of genes curated by scType and from the literature.
+5. The sctype score is calculated for each cell and each cluster resulting in a dataframe with an assigned label for each cluster.
+6. The cells labeled as MGE or CGE interneurons are subsetted in a new seurat object. These cells are then annotated for interneuron subtypes using the scType scoring.
+    1. The gene list used here is gs_listv5.xlsx, which consists of genes curated from the literature. 
+  2. The cell labels are visualized in the Seurat UMAP. 
+7. The score dfs are saved as a text file for each format and can be used for further processing.
 
 # 4b. Visualize scType Ouput with Bar Chart
 ### In the plot_herr_sctype.R and bar_plot_int.R scripts, the files from the previous(3b) step are used to generate a bar chart.
