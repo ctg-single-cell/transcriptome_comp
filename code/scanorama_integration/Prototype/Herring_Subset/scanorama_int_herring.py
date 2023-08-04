@@ -14,13 +14,6 @@ ga34 = sc.read("ga34_cleaned_count_matrices.h5ad")
 # Combine the AnnData objects into one
 combo_adata = sc.AnnData.concatenate([ga22, ga24, ga34])
 
-# Don't perform variable gene selection on scaled data matrix
-adata2 = combo_adata.raw
-adata2.raw = None
-
-# Check that the matrix looks like normalized counts
-print(adata2.X[1:10, 1:10])
-
 # Variance Stabilizing Transformation - VST
 sc.pp.log1p(combo_adata, copy=False)
 sc.pp.highly_variable_genes(combo_adata, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='batch')
@@ -41,7 +34,7 @@ print("All data var genes: %d" % sum(var_genes_all))
 
 # Identify variable genes that are the same between batches
 print("Overlap: %d" % sum(var_genes_batch & var_genes_all))
-print("Variable genes in all batches: %d" % sum(combo_adata.var.highly_variable_nbatches == 6))
+print("Variable genes in all batches: %d" % sum(combo_adata.var.highly_variable_nbatches == 3))
 print("Overlap batch intersection and all: %d" % sum(var_genes_all & combo_adata.var.highly_variable_intersection))
 
 var_select = combo_adata.var.highly_variable_nbatches > 2

@@ -16,13 +16,14 @@ herr34 = sc.read("ga34_cleaned_count_matrices.h5ad")
 herr22.obs['Source'] = 'Herring_GA22'
 herr24.obs['Source'] = 'Herring_GA24'
 herr34.obs['Source'] = 'Herring_GA34'
-
+#################################################################################
 #Polioudakis: 17-18 GW 
 pol = sc.read_csv("Polio_matrix.csv")
 pol = pol.transpose()
 
 # Assign the age & author as a new column in the metadata as Source
 pol.obs['Source'] = 'Polioudakis_GW17-18'
+#################################################################################
 
 #Han Data: 11, 12, 13 GW, authors removed cells with less then 500 UMI counts
 han11b1 = sc.read_text('FetalBrain4.rawdge.txt')
@@ -44,15 +45,12 @@ han13 = sc.read_text('FetalBrain3.rawdge.txt')
 
 han13 = han13.transpose()
 
-
 # Assign the age & author as a new column in the metadata as Source
 han11b1.obs['Source'] = 'Han_GW11.1'
 han11b2.obs['Source'] = 'Han_GW11.2'
 han12.obs['Source'] = 'Han_GW12'
 han13.obs['Source'] = 'Han_GW13'
-
-
-
+#################################################################################
 #Couturier Data: 13, 17, 19 GW, authors removed cells with less then a 1000 cells
 cou13 = sc.read_10x_mtx('HFA567_total.filtered_gene_matrices', var_names='gene_symbols', cache=True)
 cou17 = sc.read_10x_mtx('HFA570_total.filtered_gene_matrices', var_names='gene_symbols', cache=True)
@@ -62,14 +60,13 @@ cou19 = sc.read_10x_mtx('HFA571_total.filtered_gene_matrices', var_names='gene_s
 cou13.obs['Source'] = 'Couturier_GW13'
 cou17.obs['Source'] = 'Couturier_GW17'
 cou19.obs['Source'] = 'Couturier_GW19'
-
+#################################################################################
 #Fan Data: 22-23 GW
 liu = sc.read('hNSPC_raw_counts.h5ad')
 
-
 # Assign the age & author as a new column in the metadata as Source
 liu.obs['Source'] = 'Liu_GW17-19'
-
+#################################################################################
 #Velasco 3 and 6 months
 vel3 = sc.read_csv('expression_PGP1.3mon.txt', delimiter='\t')
 vel3 = vel3.transpose()
@@ -80,53 +77,65 @@ vel6 = vel6.transpose()
 # Assign the age & author as a new column in the metadata as Source
 vel3.obs['Source'] = 'Velasco_3mo'
 vel6.obs['Source'] = 'Velasco_6mo'
-
+#################################################################################
 #Trujillo 1, 3, 6, 10 months
-truj1 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Trujillo/1_month', var_names='gene_symbols', cache=True)
-truj3 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Trujillo/3_months', var_names='gene_symbols', cache=True)
-truj6 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Trujillo/6_months', var_names='gene_symbols', cache=True)
-truj10 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Trujillo/10_months', var_names='gene_symbols', cache=True)
+truj1 = sc.read_10x_mtx('Trujillo/1_month', var_names='gene_symbols', cache=True)
+truj3 = sc.read_10x_mtx('Trujillo/3_months', var_names='gene_symbols', cache=True)
+truj6 = sc.read_10x_mtx('Trujillo/6_months', var_names='gene_symbols', cache=True)
+truj10 = sc.read_10x_mtx('Trujillo/10_months', var_names='gene_symbols', cache=True)
 
 # Assign the age & author as a new column in the metadata as Source
 truj1.obs['Source'] = 'Trujillo_1mo'
 truj3.obs['Source'] = 'Trujillo_3mo'
 truj6.obs['Source'] = 'Trujillo_6mo'
 truj10.obs['Source'] = 'Trujillo_10mo'
-
+#################################################################################
 #Giandomenico 75 days  #log transformed, maybe raw data in RNA assay - need to check
 gian = sc.read_csv('GSE124174_org75_seuratdata.txt', delimiter=' ')
 gian = gian.transpose()
 
 # Assign the age & author as a new column in the metadata as Source
 gian.obs['Source'] = 'Giandomenico_2.5mo'
-
+#################################################################################
 #Fair: 90 & 140 days (3mo & 4.5mo)
-fair90 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Fair/90_days', var_names='gene_symbols', cache=True)
-fair140 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Fair/140_days', var_names='gene_symbols', cache=True)
+fair90 = sc.read_10x_mtx('Fair/90_days', var_names='gene_symbols', cache=True)
+fair140 = sc.read_10x_mtx('140_days', var_names='gene_symbols', cache=True)
 
 # Assign the age & author as a new column in the metadata as Source
 fair90.obs['Source'] = 'Fair_3mo'
 fair140.obs['Source'] = 'Fair_4.5mo'
-
+#################################################################################
 
 #Meng 50 days
-mengu1 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Meng/U1M', var_names='gene_symbols', cache=True)
-mengu2 = sc.read_10x_mtx('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/data/Meng/U2F', var_names='gene_symbols', cache=True)
+mengu1 = sc.read_10x_mtx('Meng/U1M', var_names='gene_symbols', cache=True)
+mengu2 = sc.read_10x_mtx('Meng/U2F', var_names='gene_symbols', cache=True)
 
 # Assign the age & author as a new column in the metadata as Source
 mengu1.obs['Source'] = 'Meng_U1M_1.5mo'
 mengu2.obs['Source'] = 'Meng_U2F_1.5mo'
-
+#################################################################################
 dataset_list = [herr22, herr24, herr34, pol, cou13, cou17, cou19, han11b1, han11b2, han12, han13, liu, vel3, vel6, truj1, truj3, truj6, truj10, gian, mengu1, mengu2]  
 
 for adata in dataset_list:
+    # Print the number of cells and genes before filtering
+    print(f"Before filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+    
     # Preprocessing steps for each adata object
     sc.pp.filter_cells(adata, min_genes=200)
     sc.pp.filter_genes(adata, min_cells=3)
+    
+    # Print the number of cells and genes after filtering
+    print(f"After cell and gene filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+
     adata.var['mt'] = adata.var_names.str.startswith('MT-')
     sc.pp.calculate_qc_metrics(adata, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
+
     adata = adata[adata.obs.n_genes_by_counts < 2500, :]
     adata = adata[adata.obs.pct_counts_mt < 5, :]
+    
+    # Print the number of cells and genes after quality control filtering
+    print(f"After quality control filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata, copy=False)
 
@@ -146,20 +155,25 @@ for adata in dataset_list:
     
 test = sc.concat(dataset_list, axis = 0, join = 'outer')
 
+# Print the number of cells and genes before filtering
+print(f"Before filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 # Perform preprocessing steps
 sc.pp.filter_cells(test, min_genes=200)
 sc.pp.filter_genes(test, min_cells=3)
+# Print the number of cells and genes after filtering
+print(f"After cell and gene filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 test.var['mt'] = test.var_names.str.startswith('MT-')
 sc.pp.calculate_qc_metrics(test, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
 test = test[test.obs.n_genes_by_counts < 2500, :]
 test = test[test.obs.pct_counts_mt < 5, :]
+# Print the number of cells and genes after quality control filtering
+print(f"After quality control filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 sc.pp.normalize_total(test, target_sum=1e4)
 sc.pp.log1p(test, copy=False)
 
 # Identify highly variable genes using batch information
 sc.pp.highly_variable_genes(test, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='Source')
 
-test.write_h5ad('C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/vitro_vivo.h5ad')
 # Detect Variable Genes
 var_genes_all = test.var.highly_variable
 print("Highly variable genes: %d" % sum(var_genes_all))

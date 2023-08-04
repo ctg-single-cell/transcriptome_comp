@@ -21,14 +21,14 @@ herr34 = sc.read(working_directory +"ga34_cleaned_count_matrices.h5ad")
 herr22.obs['Source'] = 'Herring_GA22'
 herr24.obs['Source'] = 'Herring_GA24'
 herr34.obs['Source'] = 'Herring_GA34'
-
+#################################################################################
 #Polioudakis: 17-18 GW 
 pol = sc.read_csv(working_directory +"Polio_matrix.csv")
 pol = pol.transpose()
 
 # Assign the age & author as a new column in the metadata as Source
 pol.obs['Source'] = 'Polioudakis_GW17-18'
-
+#################################################################################
 #Han Data: 11, 12, 13 GW, authors removed cells with less then 500 UMI counts
 han11b1 = sc.read_text(working_directory +'FetalBrain4.rawdge.txt')
 
@@ -50,15 +50,12 @@ han13 = sc.read_text(working_directory +'FetalBrain3.rawdge.txt')
 #han13 = sc.read_text('GSM4008678_Fetal-Brain3_dge.txt')
 han13 = han13.transpose()
 
-
 # Assign the age & author as a new column in the metadata as Source
 han11b1.obs['Source'] = 'Han_GW11.1'
 han11b2.obs['Source'] = 'Han_GW11.2'
 han12.obs['Source'] = 'Han_GW12'
 han13.obs['Source'] = 'Han_GW13'
-
-
-
+#################################################################################
 #Couturier Data: 13, 17, 19 GW, authors removed cells with less then a 1000 cells
 cou13 = sc.read_10x_mtx(working_directory +'HFA567_total.filtered_gene_matrices', var_names='gene_symbols', cache=True)
 cou17 = sc.read_10x_mtx(working_directory +'HFA570_total.filtered_gene_matrices', var_names='gene_symbols', cache=True)
@@ -68,59 +65,36 @@ cou19 = sc.read_10x_mtx(working_directory +'HFA571_total.filtered_gene_matrices'
 cou13.obs['Source'] = 'Couturier_GW13'
 cou17.obs['Source'] = 'Couturier_GW17'
 cou19.obs['Source'] = 'Couturier_GW19'
-
+#################################################################################
 #Fan Data: 22-23 GW
 liu = sc.read(working_directory +'hNSPC_raw_counts.h5ad')
 
-
 # Assign the age & author as a new column in the metadata as Source
 liu.obs['Source'] = 'Liu_GW17-19'
-
-
-
-#Zhong Data: 8-26 GW
-#zho = sc.read_text('Zhong_matrix.txt', delimiter='\t')
-#zho = zho.transpose()
-
-#Assign the age & author as a new column in the metadata as Source
-#import re
-
-# Extract the string before the underscore from the cell names
-#age_info = []  # List to store age information
-
-#for cell_name in zho.obs_names:
-#    match = re.search(r'(.+?)_', cell_name)
-#    if match:
-#        age_info.append(match.group(1) + "_Zhong")
-#    else:
-#        age_info.append('Unknown')
-
-# Create a new column in the metadata and assign the extracted age information to it
-#zho.obs['Source'] = age_info
-
-#need to remove some values from var
-# Define the regular expression pattern
-#pattern = r'\d{1,2}-[A-Za-z]{3}'
-
-# Create a mask to identify variable names that match the pattern
-#mask = np.array([re.match(pattern, name) is not None for name in zho.var_names])
-
-# Remove the variable names that match the pattern from the Scanpy object
-#zho = zho[:, ~mask]
-
-
+#################################################################################
 
 dataset_list = [herr22, herr24, herr34, pol, cou13, cou17, cou19, han11b1, han11b2, han12, han13, liu]  
 
-
 for adata in dataset_list:
+    # Print the number of cells and genes before filtering
+    print(f"Before filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+    
     # Preprocessing steps for each adata object
     sc.pp.filter_cells(adata, min_genes=200)
     sc.pp.filter_genes(adata, min_cells=3)
+    
+    # Print the number of cells and genes after filtering
+    print(f"After cell and gene filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+
     adata.var['mt'] = adata.var_names.str.startswith('MT-')
     sc.pp.calculate_qc_metrics(adata, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
+
     adata = adata[adata.obs.n_genes_by_counts < 2500, :]
     adata = adata[adata.obs.pct_counts_mt < 5, :]
+    
+    # Print the number of cells and genes after quality control filtering
+    print(f"After quality control filtering: {adata.shape[0]} cells and {adata.shape[1]} genes")
+
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata, copy=False)
       
@@ -140,13 +114,19 @@ for adata in dataset_list:
     
 test = sc.concat(dataset_list, axis = 0, join = 'outer')
 
+# Print the number of cells and genes before filtering
+print(f"Before filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 # Perform preprocessing steps
 sc.pp.filter_cells(test, min_genes=200)
 sc.pp.filter_genes(test, min_cells=3)
+# Print the number of cells and genes after filtering
+print(f"After cell and gene filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 test.var['mt'] = test.var_names.str.startswith('MT-')
 sc.pp.calculate_qc_metrics(test, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
 test = test[test.obs.n_genes_by_counts < 2500, :]
 test = test[test.obs.pct_counts_mt < 5, :]
+# Print the number of cells and genes after quality control filtering
+print(f"After quality control filtering: {test.shape[0]} cells and {test.shape[1]} genes")
 sc.pp.normalize_total(test, target_sum=1e4)
 sc.pp.log1p(test, copy=False)
 
@@ -218,7 +198,7 @@ sc.tl.umap(adata_sc)
 sc.pl.umap(adata_sc, color="Source", title="Scanorama (integrated & batch corrected) umap")
 sc.pl.umap(test, color="Source", title="Uncorrected")
 #save adata file
-adata_sc.write_h5ad('vivo2_int.h5ad')
+adata_sc.write_h5ad('vivo_int.h5ad')
 
 
 

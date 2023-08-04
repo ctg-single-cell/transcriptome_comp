@@ -1,26 +1,21 @@
-# Integrate Datasets with Scanorama
-- Date: 04-08-2023
-- Author: Fallon Ratner (f.t.ratner@student.vu.nl)
-- This README contains instructions on how to run Scanorama to integrate single cell RNA-seq from brain organoids.
-**NOTE**: Integrating these datasets was done on a cluster computer.
-
-## What is Scanorama?
-- Scanorama is a tool to integrate datasets and correct for batch effects. The method is based on using highly variable genes to compute mutual nearest neighbors among the datasets. Scanorama requires as input: a list of scanpy objects, a list of highly variables genes, and the Scanorama package. After running the computation, Scanorama will produce a corrected gene matrix which can be used to generate a UMAP. The output can then be used for further processing such as annotation with scType.
-- For more information about Scanorama please refer to the orginal publication: 
-- Hie, B., Bryson, B. & Berger, B. Efficient integration of heterogeneous single-cell transcriptomes using Scanorama. Nat Biotechnol 37, 685–691 (2019). https://doi.org/10.1038/s41587-019-0113-3
-- Or visit the Scanorama Github: https://github.com/brianhie/scanorama
+# Annotate Cells with ScType
+### Date: 09-06-2023   
+### Author: Fallon Ratner (f.t.ratner@student.vu.nl)
+### This README contains instructions on how to run scType on a local computer to annotate single cell/nuclei RNA-seq from in vivo brain tissue.
+### _NOTE_: The annotation pipeline has been optimized for fetal brain tissue and may need further optimization for other tissue types.
 
 
-## 0. Installation of software and packages
-### Scanorama pipeline requires the following
+# 0. Installation of software and packages
+### scType pipeline requires the following
 * [Python]: version 3.10.9
-* Python packages (scanpy; scanorama; numpy; pandas; scipy.io)
+* Python packages (Scanpy)
+* [R]: version 4.2.3
+* R packages (Seurat; HGNChelper; anndata; dplyr; stringr)
 
-
-## 1. Downloading the scRNAseq Data
+# 1. Downloading the scRNAseq Data
 ### Download the Data
-* Go to the links provided in the following text (Dataset Used) and download the files: 
-### Datasets Used: (Cells reported post-qc)
+* Go to the link provided in the following text (Dataset Used) and download this file: 'Processed_data_RNA-all_full-counts-and-downsampled-CPM.h5ad'
+### Datasets Used: (cells reported as post-qc)
 Velasco et al., 2019
     scRNAseq of PGP1 (iPSC cell line) - derived 3 & 6 month brain organoids
     Number of Cells in 3 months: 12,990
@@ -87,14 +82,25 @@ Author: Bhaduri et al., 2020
     Download: GSE132672_allorganoids_withnew_matrix.txt.gz
     Accessed: 31-07-2023
 
+# 2. Annotate the Integaret Brain Organoid Datasets with scType
+### In the vitro_int_sctype.R script, the Scanorama integrated data is annotated with the Sctype tool.
+1. The h5ad file needs to be converted into a Seurat object which is done with the anndata and Seurat packages.
+2. The data is pre-processed using a standard Seurat pipeline to normalize and scale the data which is required as input for Sctype.
+3. The data is clustered using the standard Seurat pipeline which is also required as input for Sctype.
+4. The scType functions and gene list are loaded into the environment.
+    1. The gene list used is gs_listv4.xlsx, which consists of genes curated by scType and from the literature.
+5. The sctype score is calculated for each cell and each cluster resulting in a dataframe with an assigned label for each cluster.
+    1. The score df is saved as a text file for each format and can be used for further processing.
+6. The cell labels are visualized in the Seurat UMAP.
+7. The cells labeled as MGE or CGE Intenreurons are subsetted into another Seurat object which undergoes a new round of clustering.
+8. The interneuron subset will be annotated with the gs_listv5.xlsx which contains gene markers for interneuron sub-types. 
+    1. Again scType will calculate the score and the ouput will be saved as a text file for further processing.
+9. The interneuron cell labels are visualized in the Seurat UMAP. 
 
-## 2. Integrate with Scanorama
-### In the invitro_int.py script, the files from the previous step will be used for integration with Scanorama.
-1. All of the files are made into scanpy objects based on the format provided by the Author's, some of the data needs to be wrangled to access the correct time points and conditions. The Source is added as an observed value to the metadata. 
-2. Perform standard pre-processing on the individual datasets.
-3. Combine all of the individual datasets into one scanpy object and repeat standard pre-processing steps.
-4. Identify highly variable genes in the data.
-5. Make a list of the individual datatsets with the variable genes calculated in the previous step.
-6. Perform the integration and batch correction using the scanorama package.
-7. Visualize the uncorrected and corrected data in a UMAP.
-8. Save the scanpy objects as an h5ad file which will store the: corrected matrix, UMAP, and metadata. 
+# 3. Visualize scType Ouput with Bar Charts
+### In the bar_plot_int.R script, the files from the previous step are used to generate bar charts.
+1. Read in the output files and calculate the proportion as a percentage.
+2. Not all cell types are found in each dataset, so those values will be assigned to 0.
+3. Visualize the percentage of cell types for each dataset in a bar chart. 
+
+ 
