@@ -111,6 +111,7 @@ for (dataset in datasets) {
     ## [1] "Warning: File han11.1_sctype_INs_25_7.csv does not exist. Skipping..."
     ## [1] "Warning: File liu_sctype_INs_25_7.csv does not exist. Skipping..."
 
+<<<<<<< HEAD
 ``` r
 head(vivo)
 ```
@@ -125,6 +126,8 @@ head(vivo)
     ## 5 Microglia                       85       4.22 Han_GW11.1
     ## 6 Mural                           46       2.29 Han_GW11.1
 
+=======
+>>>>>>> 637b0438f62cb7b1df2c0835103fa98086dc2ee9
 ## Load the in vitro csv files and calculate the proportions
 
 ``` r
