@@ -111,6 +111,23 @@ for (dataset in datasets) {
     ## [1] "Warning: File han11.1_sctype_INs_25_7.csv does not exist. Skipping..."
     ## [1] "Warning: File liu_sctype_INs_25_7.csv does not exist. Skipping..."
 
+<<<<<<< HEAD
+``` r
+head(vivo)
+```
+
+    ## # A tibble: 6 × 4
+    ##   type                   total_cells percentage source    
+    ##   <chr>                        <int>      <dbl> <chr>     
+    ## 1 Glioblasts                     191       9.49 Han_GW11.1
+    ## 2 Immature Astrocytes            349      17.3  Han_GW11.1
+    ## 3 Interneuron Precursors         197       9.79 Han_GW11.1
+    ## 4 Maturing Excitatory            773      38.4  Han_GW11.1
+    ## 5 Microglia                       85       4.22 Han_GW11.1
+    ## 6 Mural                           46       2.29 Han_GW11.1
+
+=======
+>>>>>>> 637b0438f62cb7b1df2c0835103fa98086dc2ee9
 ## Load the in vitro csv files and calculate the proportions
 
 ``` r
