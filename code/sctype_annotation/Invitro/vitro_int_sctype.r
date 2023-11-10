@@ -9,7 +9,7 @@ library(anndata)
 #working_directory = '/home/rfallon/integration'
 output_directory = '/home/rfallon/output'
 #Convert h5ad to Seurat
-adata <- read_h5ad('/home/rfallon/vitro_int_03_08.h5ad')
+adata <- read_h5ad('/home/rfallon/vitro_int_09_08.h5ad')
 
 #Turn into matrix and transpose
 ad_t <- t(as.matrix(adata$X))
@@ -30,9 +30,9 @@ int[["UMAP"]] <- CreateDimReducObject(embeddings = obsm_m, key = "UMAP")
 # Plot the UMAP
 umap1 <- DimPlot(int, reduction = "UMAP", group.by = "Source")
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap1.pdf"
+#output_path <- "/home/rfallon/output/vitro_umap1.pdf"
 #output_path <- "C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output/Integration/vitro_umap1.pdf"
-ggsave(output_path, plot = umap1)
+#ggsave(output_path, plot = umap1)
 
 # normalize data
 int[["percent.mt"]] <- PercentageFeatureSet(int, pattern = "^MT-")
@@ -45,14 +45,14 @@ int <- ScaleData(int, features = rownames(int))
 int <- RunPCA(int, features = VariableFeatures(object = int))
 
 # cluster and visualize
-int <- FindNeighbors(int, dims = 1:30)
+int <- FindNeighbors(int, dims = 1:40)
 int <- RunUMAP(int, reduction.use = "UMAP", dims = 1:40)
 int <- FindClusters(int, reduction.use = "UMAP", resolution = 0.8, dims = 1:40)
 
 umap2 <- DimPlot(int, reduction = "UMAP", label = TRUE)
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap2.pdf"
-ggsave(output_path, plot = umap2)
+#output_path <- "/home/rfallon/output/vitro_umap2.pdf"
+#ggsave(output_path, plot = umap2)
 
 # load gene set preparation function
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
@@ -98,39 +98,45 @@ for(j in unique(sctype_scores$cluster)){
 
 umap3 <- DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif') 
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap3.pdf"
+output_path <- "/home/rfallon/output/vitro_umap3_1011.pdf"
 ggsave(output_path, plot = umap3)
 
 umap4 <- DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif', split.by = 'Source')        
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap4.pdf"
+output_path <- "/home/rfallon/output/vitro_umap4_1011.pdf"
 ggsave(output_path, plot = umap4)
 
 #Make a dataframe that also has the clusters and corresponding age
-# Create an empty dataframe to store cell type, source, and ncells information
 cell_type_source_df <- data.frame(cell_type = character(),
-                               source = character(),
-                               ncells = integer(),
-                               stringsAsFactors = FALSE)
+                            source = character(),
+                            ncells = integer(),
+                            seurat_cluster = integer(),
+                            stringsAsFactors = FALSE)
 
 # Loop over unique clusters
 for (j in unique(sctype_scores$cluster)) {
   cl_type <- sctype_scores[sctype_scores$cluster == j, ]
   cell_type <- as.character(cl_type$type[1])
   
-  # Get unique source value for the cluster
-  source <- unique(int@meta.data$Source[int@meta.data$seurat_clusters == j])
+  # Get the unique source values (samples) for the cluster
+  sources <- unique(int@meta.data$Source[int@meta.data$seurat_clusters == j])
   
-  # Get the number of cells in the cluster
-  ncells <- sum(int@meta.data$seurat_clusters == j)
-  
-  # Append the cell type, age, and ncells information to the dataframe
-  cell_type_source_df <- rbind(cell_type_source_df, data.frame(cell_type = cell_type, source = source, ncells = ncells))
+  for (source in sources) {
+    # Get the number of cells in the cluster for the current sample
+    ncells <- sum(int@meta.data$seurat_clusters == j & int@meta.data$Source == source)
+    
+    # Append the cell type, sample, ncells, and Seurat cluster number to the dataframe
+    cell_type_source_df <- rbind(cell_type_source_df, data.frame(
+      cell_type = cell_type,
+      source = source,
+      ncells = ncells,
+      seurat_cluster = j  # Add the Seurat cluster number
+    ))
+  }
 }
-
 #Save output 
 # Create the file path for the CSV
-csv_file_path <- paste0(output_directory, "vitro_int_sctype.csv")
+csv_file_path <- paste0(output_directory, "vitro_int_sctype1011.csv")
 write.csv(cell_type_source_df, file = csv_file_path, row.names = TRUE)
 
 ##############################################################################################################
@@ -147,11 +153,11 @@ gaba <- RunUMAP(gaba, dims = 1:15)
 
 gabamap <- DimPlot(gaba, reduction = "umap", label = TRUE, group.by = 'customclassif')
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_gabamap.pdf"
+output_path <- "/home/rfallon/output/vitro_gabamap1011.pdf"
 ggsave(output_path, plot = gabamap)
 gabamap2 <- DimPlot(gaba, reduction = "umap", label = TRUE)
 # Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_gabamap2.pdf"
+output_path <- "/home/rfallon/output/vitro_gabamap21011.pdf"
 ggsave(output_path, plot = gabamap2)
 #Use my gs_list file
 db_2 = "gs_listv5.xlsx";
@@ -187,26 +193,37 @@ ggsave(output_path, plot = gabamap3)
 #Make a dataframe that also has the clusters and corresponding age
 # Create an empty dataframe to store cell type, source, and ncells information
 cell_type_source_df2 <- data.frame(cell_type = character(),
-                               source = character(),
-                               ncells = integer(),
-                               stringsAsFactors = FALSE)
+                            source = character(),
+                            ncells = integer(),
+                            seurat_cluster = integer(),
+                            stringsAsFactors = FALSE)
 
 # Loop over unique clusters
 for (j in unique(sctype_scores2$cluster)) {
   cl_type <- sctype_scores2[sctype_scores2$cluster == j, ]
   cell_type <- as.character(cl_type$type[1])
   
-  # Get unique source value for the cluster
-  source <- unique(gaba@meta.data$Source[gaba@meta.data$seurat_clusters == j])
+  # Get the unique source values (samples) for the cluster
+  sources <- unique(gaba@meta.data$Source[gaba@meta.data$seurat_clusters == j])
   
-  # Get the number of cells in the cluster
-  ncells <- sum(gaba@meta.data$seurat_clusters == j)
-  
-  # Append the cell type, age, and ncells information to the dataframe
-  cell_type_source_df2 <- rbind(cell_type_source_df2, data.frame(cell_type = cell_type, source = source, ncells = ncells))
+  for (source in sources) {
+    # Get the number of cells in the cluster for the current sample
+    ncells <- sum(gaba@meta.data$seurat_clusters == j & gaba@meta.data$Source == source)
+    
+    # Append the cell type, sample, ncells, and Seurat cluster number to the dataframe
+    cell_type_source_df2 <- rbind(cell_type_source_df2, data.frame(
+      cell_type = cell_type,
+      source = source,
+      ncells = ncells,
+      seurat_cluster = j  # Add the Seurat cluster number
+    ))
+  }
 }
 
 #Save output 
 # Create the file path for the CSV
-csv_file_path <- paste0(output_directory, "vitro_gaba_int_sctype.csv")
+csv_file_path <- paste0(output_directory, "vitro_gaba_int_sctype1011.csv")
 write.csv(cell_type_source_df2, file = csv_file_path, row.names = TRUE)
+
+saveRDS(int, "int_1011.rds")
+saveRDS(gaba, "gaba_int_1011.rds")
