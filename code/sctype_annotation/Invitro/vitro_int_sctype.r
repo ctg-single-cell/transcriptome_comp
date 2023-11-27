@@ -5,12 +5,8 @@ library(HGNChelper)
 library(ggplot2)
 library(anndata)
 #######################################################################
-# Set the working directory
-#working_directory = '/home/rfallon/integration'
-output_directory = '/home/rfallon/output'
-#Convert h5ad to Seurat
-adata <- read_h5ad('/home/rfallon/vitro_int_09_08.h5ad')
-
+#Convert h5ad of integrated organoids to Seurat object
+adata <- read_h5ad('vitro_int_09_08.h5ad')
 #Turn into matrix and transpose
 ad_t <- t(as.matrix(adata$X))
 #removing this gene because causing error in creating seurat object
@@ -24,36 +20,25 @@ int[["Source"]] <- adata$obs$Source
 obsm_m <- as.matrix(adata$obsm$X_umap)
 rownames(obsm_m) <- colnames(int)
 int[["UMAP"]] <- CreateDimReducObject(embeddings = obsm_m, key = "UMAP")
-#DimPlot(int, reduction = "UMAP", group.by = "Source")
-
-
 # Plot the UMAP
-umap1 <- DimPlot(int, reduction = "UMAP", group.by = "Source")
-# Save the plot as a PDF file
-#output_path <- "/home/rfallon/output/vitro_umap1.pdf"
-#output_path <- "C:/Users/fallo/Documents/Internship_2023/transcriptome_comp/output/Integration/vitro_umap1.pdf"
-#ggsave(output_path, plot = umap1)
+DimPlot(int, reduction = "UMAP", group.by = "Source")
 
-# normalize data
+#filter and normalize data
 int[["percent.mt"]] <- PercentageFeatureSet(int, pattern = "^MT-")
 int <- NormalizeData(int, normalization.method = "LogNormalize", scale.factor = 10000)
 int <- FindVariableFeatures(int, selection.method = "vst", nfeatures = 2000)
 
 # scale and run PCA
 int <- ScaleData(int, features = rownames(int))
-
 int <- RunPCA(int, features = VariableFeatures(object = int))
 
 # cluster and visualize
 int <- FindNeighbors(int, dims = 1:40)
 int <- RunUMAP(int, reduction.use = "UMAP", dims = 1:40)
 int <- FindClusters(int, reduction.use = "UMAP", resolution = 0.8, dims = 1:40)
-
 umap2 <- DimPlot(int, reduction = "UMAP", label = TRUE)
-# Save the plot as a PDF file
-#output_path <- "/home/rfallon/output/vitro_umap2.pdf"
-#ggsave(output_path, plot = umap2)
 
+#scType Annotation
 # load gene set preparation function
 source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
 # load cell type annotation function
@@ -61,9 +46,7 @@ source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sct
 
 # DB file: input cell marker file
 db_ = "gs_listv4.xlsx";
-
 tissue = "Brain" 
-
 # prepare gene sets
 gs_list = gene_sets_prepare(db_, tissue)
 
@@ -94,17 +77,9 @@ for(j in unique(sctype_scores$cluster)){
   int@meta.data$customclassif[int@meta.data$seurat_clusters == j] = as.character(cl_type$type[1])
 }
 
+DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif') 
 
-
-umap3 <- DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif') 
-# Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap3_1011.pdf"
-ggsave(output_path, plot = umap3)
-
-umap4 <- DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif', split.by = 'Source')        
-# Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_umap4_1011.pdf"
-ggsave(output_path, plot = umap4)
+DimPlot(int, reduction = "UMAP", label = FALSE, group.by = 'customclassif', split.by = 'Source')        
 
 #Make a dataframe that also has the clusters and corresponding age
 cell_type_source_df <- data.frame(cell_type = character(),
@@ -134,10 +109,8 @@ for (j in unique(sctype_scores$cluster)) {
     ))
   }
 }
-#Save output 
-# Create the file path for the CSV
-csv_file_path <- paste0(output_directory, "vitro_int_sctype1011.csv")
-write.csv(cell_type_source_df, file = csv_file_path, row.names = TRUE)
+#Save csv
+write.csv(cell_type_source_df, file = "oragnoid_sctype.csv", row.names = TRUE)
 
 ##############################################################################################################
 #Repeat annotation on interneuron MGE and CGE clusters
@@ -152,14 +125,9 @@ gaba <- FindClusters(gaba, resolution = 0.5)
 gaba <- RunUMAP(gaba, dims = 1:15)
 
 gabamap <- DimPlot(gaba, reduction = "umap", label = TRUE, group.by = 'customclassif')
-# Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_gabamap1011.pdf"
-ggsave(output_path, plot = gabamap)
-gabamap2 <- DimPlot(gaba, reduction = "umap", label = TRUE)
-# Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_gabamap21011.pdf"
-ggsave(output_path, plot = gabamap2)
-#Use my gs_list file
+DimPlot(gaba, reduction = "umap", label = TRUE)
+
+#scType Annotation
 db_2 = "gs_listv5.xlsx";
 # prepare gene sets
 gs_list2 = gene_sets_prepare(db_2, tissue)
@@ -185,10 +153,7 @@ for(j in unique(sctype_scores2$cluster)){
   gaba@meta.data$customclassif[gaba@meta.data$seurat_clusters == j] = as.character(cl_type$type[1])
 }
 
-gabamap3 <- DimPlot(gaba, reduction = "umap", label = TRUE, pt.size = 0.5, group.by = 'customclassif')        
-# Save the plot as a PDF file
-output_path <- "/home/rfallon/output/vitro_gabamap3.pdf"
-ggsave(output_path, plot = gabamap3)
+DimPlot(gaba, reduction = "umap", label = TRUE, pt.size = 0.5, group.by = 'customclassif')        
 
 #Make a dataframe that also has the clusters and corresponding age
 # Create an empty dataframe to store cell type, source, and ncells information
@@ -220,10 +185,5 @@ for (j in unique(sctype_scores2$cluster)) {
   }
 }
 
-#Save output 
-# Create the file path for the CSV
-csv_file_path <- paste0(output_directory, "vitro_gaba_int_sctype1011.csv")
-write.csv(cell_type_source_df2, file = csv_file_path, row.names = TRUE)
-
-saveRDS(int, "int_1011.rds")
-saveRDS(gaba, "gaba_int_1011.rds")
+#csv file
+write.csv(cell_type_source_df2, file = "organoid_sctype_INs", row.names = TRUE)
